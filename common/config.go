@@ -25,3 +25,9 @@ func GetConfigString(key string) string {
 
 	return viper.GetString(key)
 }
+
+func GetConfigInt(key string) int {
+	initConfig()
+
+	return viper.GetInt(key)
+}
