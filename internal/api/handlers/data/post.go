@@ -3,8 +3,8 @@ package data
 import (
 	"context"
 	"encoding/json"
-	"goapi/internal/api/repository/models"
-	service "goapi/internal/api/service/data"
+	"helios/internal/api/repository/models"
+	service "helios/internal/api/service/data"
 	"log"
 	"net/http"
 	"time"

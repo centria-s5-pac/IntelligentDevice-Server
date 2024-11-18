@@ -1,10 +1,10 @@
-package main
+package cmdapi
 
 import (
 	"context"
-	"goapi/internal/api/repository/DAL/SQLite"
-	"goapi/internal/api/server"
-	"goapi/internal/api/service"
+	"helios/internal/api/repository/DAL/SQLite"
+	"helios/internal/api/server"
+	"helios/internal/api/service"
 	"io"
 	"log"
 	"net/http"
@@ -33,7 +33,7 @@ func NewSimpleLogger(logFile string) *log.Logger {
 	return log.New(io.MultiWriter(file, os.Stdout), "", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func main() {
+func Main() {
 
 	// * Timeout is used to gracefully shutdown the server *
 	ctx, cancel := context.WithCancel(context.Background())

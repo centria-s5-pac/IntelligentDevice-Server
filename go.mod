@@ -1,4 +1,4 @@
-module goapi
+module helios
 
 go 1.22.2
 

@@ -2,9 +2,9 @@ package data_test
 
 import (
 	"encoding/json"
-	"goapi/internal/api/handlers/data"
-	"goapi/internal/api/repository/models"
-	service "goapi/internal/api/service/data"
+	"helios/internal/api/handlers/data"
+	"helios/internal/api/repository/models"
+	service "helios/internal/api/service/data"
 	"io"
 	"log"
 	"net/http"

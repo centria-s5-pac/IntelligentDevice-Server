@@ -3,7 +3,7 @@ package data
 import (
 	"context"
 	"encoding/json"
-	service "goapi/internal/api/service/data"
+	service "helios/internal/api/service/data"
 	"log"
 	"net/http"
 	"strconv"

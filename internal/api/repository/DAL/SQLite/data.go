@@ -3,8 +3,8 @@ package SQLite
 import (
 	"context"
 	"database/sql"
-	"goapi/internal/api/repository/DAL"
-	"goapi/internal/api/repository/models"
+	"helios/internal/api/repository/DAL"
+	"helios/internal/api/repository/models"
 )
 
 type DataRepository struct {

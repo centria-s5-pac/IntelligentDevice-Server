@@ -1,8 +1,8 @@
 package data_test
 
 import (
-	"goapi/internal/api/handlers/data"
-	service "goapi/internal/api/service/data"
+	"helios/internal/api/handlers/data"
+	service "helios/internal/api/service/data"
 	"io"
 	"log"
 	"net/http"

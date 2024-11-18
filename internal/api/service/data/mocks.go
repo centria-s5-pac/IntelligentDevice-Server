@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"goapi/internal/api/repository/models"
+	"helios/internal/api/repository/models"
 )
 
 // * Mock implementation of DataService for testing purposes, always returns a successful response and Data object(s) *

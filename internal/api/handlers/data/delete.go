@@ -2,8 +2,8 @@ package data
 
 import (
 	"context"
-	"goapi/internal/api/repository/models"
-	service "goapi/internal/api/service/data"
+	"helios/internal/api/repository/models"
+	service "helios/internal/api/service/data"
 	"log"
 	"net/http"
 	"strconv"
@@ -41,4 +41,3 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, d
 	// * This is a Success, response in JSON and with a 204 status code when data was successfully deleted
 	w.WriteHeader(http.StatusNoContent)
 }
- 

@@ -2,8 +2,8 @@ package data_test
 
 import (
 	"encoding/json"
-	"goapi/internal/api/handlers/data"
-	service "goapi/internal/api/service/data"
+	"helios/internal/api/handlers/data"
+	service "helios/internal/api/service/data"
 	"log"
 	"net/http"
 	"net/http/httptest"

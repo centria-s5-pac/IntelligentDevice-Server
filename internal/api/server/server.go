@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
-	"goapi/internal/api/handlers/data"
-	"goapi/internal/api/middleware"
-	"goapi/internal/api/service"
+	"helios/internal/api/handlers/data"
+	"helios/internal/api/middleware"
+	"helios/internal/api/service"
 	"log"
 	"net/http"
 )

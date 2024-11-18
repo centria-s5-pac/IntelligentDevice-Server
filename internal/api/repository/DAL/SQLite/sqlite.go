@@ -2,7 +2,7 @@ package SQLite
 
 import (
 	"database/sql"
-	"goapi/internal/api/repository/DAL"
+	"helios/internal/api/repository/DAL"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"

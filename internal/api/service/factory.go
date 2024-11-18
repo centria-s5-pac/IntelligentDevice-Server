@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"goapi/internal/api/repository/DAL"
-	"goapi/internal/api/repository/DAL/SQLite"
-	service "goapi/internal/api/service/data"
+	"helios/internal/api/repository/DAL"
+	"helios/internal/api/repository/DAL/SQLite"
+	service "helios/internal/api/service/data"
 	"log"
 )
 

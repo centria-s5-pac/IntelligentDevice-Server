@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"goapi/internal/api/repository/models"
+	"helios/internal/api/repository/models"
 	"time"
 )
 
