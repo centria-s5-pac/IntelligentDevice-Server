@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/base64"
+	"helios/common"
 	"net/http"
 	"strings"
 )
@@ -63,6 +64,8 @@ func BasicAuthenticationMiddleware(next http.Handler) http.Handler {
 
 func validateUser(username, password string) bool {
 
-	// ! This is a dummy implementation, replace this with real authentication logic
-	return username == "admin" && password == "password"
+	auth_password := common.GetConfigString("auth.password")
+	auth_username := common.GetConfigString("auth.username")
+
+	return username == auth_username && password == auth_password
 }
