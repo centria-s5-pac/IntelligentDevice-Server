@@ -1,0 +1,4 @@
+
+# ignore production output files
+*.db
+*.log
