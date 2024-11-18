@@ -3,15 +3,21 @@ package main
 import (
 	"fmt"
 	cmdapi "helios/cmd/api"
-	"time"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
 
 	fmt.Println("Starting the Rest API server...")
-	cmdapi.Main()
+	go cmdapi.Main()
 
-	for {
-		time.Sleep(1 * time.Second)
-	}
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	<-sigChan
+
+	fmt.Println("Shutting down the Rest API server...")
+
 }
