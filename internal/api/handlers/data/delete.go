@@ -24,7 +24,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, d
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
 
-	aff, err := ds.Delete(&models.Data{ID: id}, ctx)
+	aff, err := ds.Delete(&models.SensorData{ID: id}, ctx)
 	if err != nil {
 		logger.Println("Could not delete data:", err, id)
 		http.Error(w, "Internal Server error", http.StatusInternalServerError)

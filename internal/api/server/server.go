@@ -58,20 +58,29 @@ func setupDataHandlers(mux *http.ServeMux, sf *service.ServiceFactory, logger *l
 	mux.HandleFunc("OPTIONS /*", func(w http.ResponseWriter, r *http.Request) {
 		data.OptionsHandler(w, r)
 	})
-	mux.HandleFunc("POST /data", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /sensor", func(w http.ResponseWriter, r *http.Request) {
 		data.PostHandler(w, r, logger, ds)
 	})
-	mux.HandleFunc("PUT /data", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("PUT /sensor", func(w http.ResponseWriter, r *http.Request) {
 		data.PutHandler(w, r, logger, ds)
 	})
-	mux.HandleFunc("GET /data", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /sensor", func(w http.ResponseWriter, r *http.Request) {
 		data.GetHandler(w, r, logger, ds)
 	})
-	mux.HandleFunc("GET /data/{id}", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /sensor/{id}", func(w http.ResponseWriter, r *http.Request) {
 		data.GetByIDHandler(w, r, logger, ds)
 	})
-	mux.HandleFunc("DELETE /data/{id}", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("DELETE /sensor/{id}", func(w http.ResponseWriter, r *http.Request) {
 		data.DeleteHandler(w, r, logger, ds)
+	})
+	mux.HandleFunc("POST /light", func(w http.ResponseWriter, r *http.Request) {
+		data.PostHandler(w, r, logger, ds)
+	})
+	mux.HandleFunc("PUT /light", func(w http.ResponseWriter, r *http.Request) {
+		data.PutHandler(w, r, logger, ds)
+	})
+	mux.HandleFunc("GET /light", func(w http.ResponseWriter, r *http.Request) {
+		data.GetHandler(w, r, logger, ds)
 	})
 	return err
 }

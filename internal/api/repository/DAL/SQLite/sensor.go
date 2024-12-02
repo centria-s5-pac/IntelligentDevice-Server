@@ -17,7 +17,7 @@ type DataRepository struct {
 	ctx context.Context
 }
 
-func NewDataRepository(sqlDB DAL.SQLDatabase, ctx context.Context) (models.DataRepository, error) {
+func InitializeSensorRepository(sqlDB DAL.SQLDatabase, ctx context.Context) (models.DataRepository, error) {
 
 	repo := &DataRepository{
 		sqlDB: sqlDB.Connection(),
@@ -25,49 +25,46 @@ func NewDataRepository(sqlDB DAL.SQLDatabase, ctx context.Context) (models.DataR
 	}
 
 	// Create the data table if it doesn't exist
-	if _, err := repo.sqlDB.Exec(`CREATE TABLE  IF NOT EXISTS data (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		device_id VARCHAR(50) NOT NULL,
-		device_name VARCHAR(50),
+	if _, err := repo.sqlDB.Exec(`CREATE TABLE  IF NOT EXISTS sensor (
+		id INTEGER PRIMARY KEY,
+		type INTEGER,
 		value FLOAT,
-		data_type VARCHAR(20),
-		date_time TIMESTAMP,
-		description TEXT
+		timestamp TIMESTAMP
 	);`); err != nil {
 		repo.sqlDB.Close()
 		return nil, err
 	}
 
 	// * Create needed Prepared SQL statements, this is more efficient than running each query individually
-	createStmt, err := repo.sqlDB.Prepare(`INSERT INTO data (device_id, device_name, value, data_type, date_time, description) VALUES (?, ?, ?, ?, ?, ?)`)
+	createStmt, err := repo.sqlDB.Prepare(`INSERT INTO sensor (id, type, value, timestamp) VALUES (?, ?, ?, ?)`)
 	if err != nil {
 		repo.sqlDB.Close() // Close the database connection if statement preparation fails
 		return nil, err
 	}
 	repo.createStmt = createStmt
 
-	readStmt, err := repo.sqlDB.Prepare("SELECT id, device_id, device_name, value, data_type, date_time, description FROM data WHERE id = ?")
+	readStmt, err := repo.sqlDB.Prepare("SELECT id, type, value, timestamp FROM sensor WHERE id = ?")
 	if err != nil {
 		repo.sqlDB.Close()
 		return nil, err
 	}
 	repo.readStmt = readStmt
 
-	readManyStmt, err := repo.sqlDB.Prepare("SELECT id, device_id, device_name, value, data_type, date_time, description FROM data LIMIT ? OFFSET ?")
+	readManyStmt, err := repo.sqlDB.Prepare("SELECT id, type, value, timestamp FROM sensor LIMIT ? OFFSET ?")
 	if err != nil {
 		repo.sqlDB.Close()
 		return nil, err
 	}
 	repo.readManyStmt = readManyStmt
 
-	updateStmt, err := repo.sqlDB.Prepare("UPDATE data SET device_id = ?, device_name = ?, value = ?, data_type = ?, date_time = ?, description = ? WHERE id = ?")
+	updateStmt, err := repo.sqlDB.Prepare("UPDATE sensor SET id = ?, type = ?, value = ?, timestamp = ? WHERE id = ?")
 	if err != nil {
 		repo.sqlDB.Close()
 		return nil, err
 	}
 	repo.updateStmt = updateStmt
 
-	deleteStmt, err := repo.sqlDB.Prepare("DELETE FROM data WHERE id = ?")
+	deleteStmt, err := repo.sqlDB.Prepare("DELETE FROM sensor WHERE id = ?")
 	if err != nil {
 		repo.sqlDB.Close()
 		return nil, err
@@ -90,9 +87,9 @@ func Close(ctx context.Context, r *DataRepository) {
 	r.sqlDB.Close()
 }
 
-func (r *DataRepository) Create(data *models.Data, ctx context.Context) error {
+func (r *DataRepository) Create(data *models.SensorData, ctx context.Context) error {
 
-	res, err := r.createStmt.ExecContext(ctx, data.DeviceID, data.DeviceName, data.Value, data.Type, data.DateTime, data.Description)
+	res, err := r.createStmt.ExecContext(ctx, data.ID, data.Type, data.Value, data.Timestamp)
 	if err != nil {
 		return err
 	}
@@ -104,10 +101,10 @@ func (r *DataRepository) Create(data *models.Data, ctx context.Context) error {
 	return nil
 }
 
-func (r *DataRepository) ReadOne(id int, ctx context.Context) (*models.Data, error) {
+func (r *DataRepository) ReadOne(id int, ctx context.Context) (*models.SensorData, error) {
 	row := r.readStmt.QueryRowContext(ctx, id)
-	var data models.Data
-	err := row.Scan(&data.ID, &data.DeviceID, &data.DeviceName, &data.Value, &data.Type, &data.DateTime, &data.Description)
+	var data models.SensorData
+	err := row.Scan(&data.ID, &data.Type, &data.Value, &data.Timestamp)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -117,7 +114,7 @@ func (r *DataRepository) ReadOne(id int, ctx context.Context) (*models.Data, err
 	return &data, nil
 }
 
-func (r *DataRepository) ReadMany(page int, rowsPerPage int, ctx context.Context) ([]*models.Data, error) {
+func (r *DataRepository) ReadMany(page int, rowsPerPage int, ctx context.Context) ([]*models.SensorData, error) {
 
 	if page < 1 {
 		return r.ReadAll()
@@ -130,10 +127,10 @@ func (r *DataRepository) ReadMany(page int, rowsPerPage int, ctx context.Context
 	}
 	defer rows.Close()
 
-	var data []*models.Data
+	var data []*models.SensorData
 	for rows.Next() {
-		var d models.Data
-		err := rows.Scan(&d.ID, &d.DeviceID, &d.DeviceName, &d.Value, &d.Type, &d.DateTime, &d.Description)
+		var d models.SensorData
+		err := rows.Scan(&d.ID, &d.Type, &d.Value, &d.Timestamp)
 		if err != nil {
 			return nil, err
 		}
@@ -142,17 +139,17 @@ func (r *DataRepository) ReadMany(page int, rowsPerPage int, ctx context.Context
 	return data, nil
 }
 
-func (r *DataRepository) ReadAll() ([]*models.Data, error) {
-	rows, err := r.sqlDB.QueryContext(context.Background(), "SELECT id, device_id, device_name, value, data_type, date_time, description FROM data")
+func (r *DataRepository) ReadAll() ([]*models.SensorData, error) {
+	rows, err := r.sqlDB.QueryContext(context.Background(), "SELECT id, type, value, timestamp FROM sensor")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var data []*models.Data
+	var data []*models.SensorData
 	for rows.Next() {
-		var d models.Data
-		err := rows.Scan(&d.ID, &d.DeviceID, &d.DeviceName, &d.Value, &d.Type, &d.DateTime, &d.Description)
+		var d models.SensorData
+		err := rows.Scan(&d.ID, &d.Type, &d.Value, &d.Timestamp)
 		if err != nil {
 			return nil, err
 		}
@@ -161,8 +158,8 @@ func (r *DataRepository) ReadAll() ([]*models.Data, error) {
 	return data, nil
 }
 
-func (r *DataRepository) Update(data *models.Data, ctx context.Context) (int64, error) {
-	res, err := r.updateStmt.ExecContext(ctx, data.DeviceID, data.DeviceName, data.Value, data.Type, data.DateTime, data.Description, data.ID)
+func (r *DataRepository) Update(data *models.SensorData, ctx context.Context) (int64, error) {
+	res, err := r.updateStmt.ExecContext(ctx, data.ID, data.Type, data.Value, data.Timestamp, data.ID)
 	if err != nil {
 		return 0, err
 	}
@@ -173,7 +170,7 @@ func (r *DataRepository) Update(data *models.Data, ctx context.Context) (int64, 
 	return rowsAffected, nil
 }
 
-func (r *DataRepository) Delete(data *models.Data, ctx context.Context) (int64, error) {
+func (r *DataRepository) Delete(data *models.SensorData, ctx context.Context) (int64, error) {
 	res, err := r.deleteStmt.ExecContext(ctx, data.ID)
 	if err != nil {
 		return 0, err

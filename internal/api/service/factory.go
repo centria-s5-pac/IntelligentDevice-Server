@@ -34,7 +34,7 @@ func (sf *ServiceFactory) CreateDataService(serviceType DataServiceType) (*servi
 	switch serviceType {
 
 	case SQLiteDataService:
-		repo, err := SQLite.NewDataRepository(sf.db, sf.ctx)
+		repo, err := SQLite.InitializeSensorRepository(sf.db, sf.ctx)
 		if err != nil {
 			return nil, err
 		}

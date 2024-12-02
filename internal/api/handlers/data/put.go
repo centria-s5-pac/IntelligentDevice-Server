@@ -13,7 +13,7 @@ import (
 // * When using PUT, the client sends a complete representation of a resource to replace the current version: Whole Resource Replacement. *
 // * curl -X PUT http://127.0.0.1:8080/data -i -u admin:password -H "Content-Type: application/json" -d '{"id": 1, "content": "updated data"}'
 func PutHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds service.DataService) {
-	var data models.Data
+	var data models.SensorData
 
 	// * Decode the JSON payload from the request body into the data struct
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
@@ -41,10 +41,26 @@ func PutHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds s
 			return
 		}
 	} else if aff == 0 {
-		// * This is a User Error, response in JSON and with a 404 status code
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(`{"error": "Resource not found."}`))
-		return
+		// // * This is a User Error, response in JSON and with a 404 status code
+		// w.WriteHeader(http.StatusNotFound)
+		// w.Write([]byte(`{"error": "Resource not found."}`))
+		// return
+
+		// create the data if it does not exist
+		if err := ds.Create(&data, ctx); err != nil {
+			switch err.(type) {
+			case service.DataError:
+				// * If the error is a DataError, handle it as a client error
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte(`{"error": "` + err.Error() + `"}`))
+				return
+			default:
+				// * If it is not a DataError, handle it as a server error
+				logger.Println("Error creating data:", err, data)
+				http.Error(w, "Internal server error.", http.StatusInternalServerError)
+				return
+			}
+		}
 	}
 
 	// * Return the data to the user as JSON with a 200 OK status code

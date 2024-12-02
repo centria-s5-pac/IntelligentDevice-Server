@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-// * User sends a POST request to /data with a JSON payload in the request body *
+// * User sends a POST request to /sensors with a JSON payload in the request body *
 // * curl -X POST http://127.0.0.1:8080/data -i -u admin:password -H "Content-Type: application/json" -d '{"device_id": "device1", "device_name": "device1", "value": 1.0, "type": "type1", "date_time": "2021-01-01T00:00:00Z", "description": "description1"}'
 func PostHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds service.DataService) {
-	var data models.Data
+	var data models.SensorData
 
 	// * Decode the JSON payload from the request body into the data struct
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
