@@ -2,7 +2,8 @@ package server
 
 import (
 	"context"
-	"helios/internal/api/handlers/data"
+	"helios/internal/api/handlers/light"
+	"helios/internal/api/handlers/sensor"
 	"helios/internal/api/middleware"
 	"helios/internal/api/service"
 	"log"
@@ -56,31 +57,26 @@ func setupDataHandlers(mux *http.ServeMux, sf *service.ServiceFactory, logger *l
 	}
 
 	mux.HandleFunc("OPTIONS /*", func(w http.ResponseWriter, r *http.Request) {
-		data.OptionsHandler(w, r)
+		sensor.OptionsHandler(w, r)
 	})
 	mux.HandleFunc("POST /sensor", func(w http.ResponseWriter, r *http.Request) {
-		data.PostHandler(w, r, logger, ds)
+		sensor.PostHandler(w, r, logger, ds)
 	})
 	mux.HandleFunc("PUT /sensor", func(w http.ResponseWriter, r *http.Request) {
-		data.PutHandler(w, r, logger, ds)
+		sensor.PutHandler(w, r, logger, ds)
 	})
 	mux.HandleFunc("GET /sensor", func(w http.ResponseWriter, r *http.Request) {
-		data.GetHandler(w, r, logger, ds)
+		sensor.GetHandler(w, r, logger, ds)
 	})
 	mux.HandleFunc("GET /sensor/{id}", func(w http.ResponseWriter, r *http.Request) {
-		data.GetByIDHandler(w, r, logger, ds)
+		sensor.GetByIDHandler(w, r, logger, ds)
 	})
 	mux.HandleFunc("DELETE /sensor/{id}", func(w http.ResponseWriter, r *http.Request) {
-		data.DeleteHandler(w, r, logger, ds)
+		sensor.DeleteHandler(w, r, logger, ds)
 	})
-	mux.HandleFunc("POST /light", func(w http.ResponseWriter, r *http.Request) {
-		data.PostHandler(w, r, logger, ds)
-	})
-	mux.HandleFunc("PUT /light", func(w http.ResponseWriter, r *http.Request) {
-		data.PutHandler(w, r, logger, ds)
-	})
+
 	mux.HandleFunc("GET /light", func(w http.ResponseWriter, r *http.Request) {
-		data.GetHandler(w, r, logger, ds)
+		light.GetHandler(w, r, logger)
 	})
 	return err
 }
