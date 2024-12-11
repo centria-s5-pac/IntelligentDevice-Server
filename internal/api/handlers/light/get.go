@@ -14,6 +14,7 @@ func GetHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger) {
 
 	ld := &models.LightData{
 		Intensity: lightbrain.GetValue(),
+		Mode:      lightbrain.GetMode(),
 	}
 
 	// * Return the data to the user as JSON with a 200 OK status code
