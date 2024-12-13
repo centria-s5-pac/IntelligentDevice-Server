@@ -17,7 +17,7 @@ func initValue() {
 
 func SetValue(v int) {
 	rwMutex.Lock()
-	sharedVar = 1000 - v
+	sharedVar = v
 	rwMutex.Unlock()
 }
 
@@ -39,13 +39,4 @@ func GetMode() int {
 	value := sharedMode
 	rwMutex.RUnlock()
 	return value
-}
-func readLight() int {
-	/*mode := repo.sqlDB.Prepare(`SELECT value FROM sensor WHERE id = 21`)
-	if (mode){
-	data := repo.sqlDB.Prepare(`SELECT value FROM sensor WHERE id = 37`)
-	return data
-	}else{
-		return 0
-	}*/
 }
