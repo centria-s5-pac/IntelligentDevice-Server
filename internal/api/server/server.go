@@ -78,5 +78,8 @@ func setupDataHandlers(mux *http.ServeMux, sf *service.ServiceFactory, logger *l
 	mux.HandleFunc("GET /light", func(w http.ResponseWriter, r *http.Request) {
 		light.GetHandler(w, r, logger)
 	})
+	mux.HandleFunc("PUT /light", func(w http.ResponseWriter, r *http.Request) {
+		light.PutLightHandler(w, r, logger)
+	})
 	return err
 }

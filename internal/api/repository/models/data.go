@@ -8,7 +8,6 @@ type SensorData struct {
 	Value     float64 `json:"value"`
 	Timestamp string  `json:"timestamp"`
 }
-
 type DataRepository interface {
 	Create(Data *SensorData, ctx context.Context) error
 	ReadOne(id int, ctx context.Context) (*SensorData, error)

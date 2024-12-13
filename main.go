@@ -18,6 +18,7 @@ func main() {
 
 	fmt.Println("Starting the MQTT broadcast instance...")
 	go common.BroadcastServerIP()
+	//ip: 192.168.1.100
 
 	go lightbrain.Main()
 

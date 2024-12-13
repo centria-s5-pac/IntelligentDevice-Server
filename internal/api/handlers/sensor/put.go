@@ -14,7 +14,6 @@ import (
 // * curl -X PUT http://127.0.0.1:8080/data -i -u admin:password -H "Content-Type: application/json" -d '{"id": 1, "content": "updated data"}'
 func PutHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds service.DataService) {
 	var data models.SensorData
-
 	// * Decode the JSON payload from the request body into the data struct
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		// * This is a User Error: format of body is invalid, response in JSON and with a 400 status code
@@ -22,10 +21,8 @@ func PutHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds s
 		w.Write([]byte(`{"error": "Invalid request data. Please check your input."}`))
 		return
 	}
-
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
-
 	// * Try to update the data in the database
 	if aff, err := ds.Update(&data, ctx); err != nil {
 		switch err.(type) {
@@ -41,11 +38,6 @@ func PutHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds s
 			return
 		}
 	} else if aff == 0 {
-		// // * This is a User Error, response in JSON and with a 404 status code
-		// w.WriteHeader(http.StatusNotFound)
-		// w.Write([]byte(`{"error": "Resource not found."}`))
-		// return
-
 		// create the data if it does not exist
 		if err := ds.Create(&data, ctx); err != nil {
 			switch err.(type) {
@@ -62,7 +54,6 @@ func PutHandler(w http.ResponseWriter, r *http.Request, logger *log.Logger, ds s
 			}
 		}
 	}
-
 	// * Return the data to the user as JSON with a 200 OK status code
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
