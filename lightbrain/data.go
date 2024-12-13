@@ -40,3 +40,7 @@ func GetMode() int {
 	rwMutex.RUnlock()
 	return value
 }
+func readLight() int {
+	//data := repo.sqlDB.Prepare(`SELECT value FROM sensor WHERE id = 37`)
+	//return data
+}
