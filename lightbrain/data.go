@@ -41,6 +41,11 @@ func GetMode() int {
 	return value
 }
 func readLight() int {
-	//data := repo.sqlDB.Prepare(`SELECT value FROM sensor WHERE id = 37`)
-	//return data
+	/*mode := repo.sqlDB.Prepare(`SELECT value FROM sensor WHERE id = 21`)
+	if (mode){
+	data := repo.sqlDB.Prepare(`SELECT value FROM sensor WHERE id = 37`)
+	return data
+	}else{
+		return 0
+	}*/
 }
