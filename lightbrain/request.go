@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func GetJson() []map[string]interface{} {
+func getJson() []map[string]interface{} {
 	url := "http://127.0.0.1:8080/sensor"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -49,10 +49,31 @@ func GetJson() []map[string]interface{} {
 }
 
 func GetLightLevel() int {
-	data := GetJson()
+	data := getJson()
 	if data == nil {
 		return 0
 	}
 
-	return 1
+	isMotion := false
+
+	light_sensor_count := 0
+	light_sum := 0.0
+	for _, d := range data {
+		if d["type"] == 1 && !(d["value"] == nil || d["value"] == 0.0) { // light sensor
+			{ // motion sensor
+				isMotion = true
+			}
+
+			if d["type"] == 2 {
+				light_sensor_count++
+				light_sum += d["value"].(float64)
+			}
+		}
+	}
+
+	if !isMotion || light_sensor_count == 0 {
+		return 0
+	}
+
+	return 1000 - int(light_sum/float64(light_sensor_count))
 }

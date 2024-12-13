@@ -1,7 +1,6 @@
 package lightbrain
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -9,16 +8,7 @@ func Main() {
 	initValue()
 
 	for {
-		SetValue(GetValue() + 1)
+		SetValue(GetLightLevel())
 		time.Sleep(time.Second)
-
-		data := GetJson()
-
-		if data == nil {
-			continue
-		}
-
-		fmt.Println("Data:", data)
-
 	}
 }
