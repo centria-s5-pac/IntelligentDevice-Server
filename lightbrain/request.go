@@ -8,14 +8,14 @@ import (
 )
 
 func getJson() []map[string]interface{} {
-	url := "http://127.0.0.1:8080/sensor"
+	url := "http://localhost:8080/sensor"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 		return nil
 	}
 
-	req.SetBasicAuth("admin", "password")
+	req.SetBasicAuth("helios", "prototype")
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
