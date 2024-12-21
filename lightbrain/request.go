@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+var cooldown int = 0
+
 func getJson() []map[string]interface{} {
 	url := "http://127.0.0.1:8080/sensor"
 	req, err := http.NewRequest("GET", url, nil)
@@ -51,6 +53,7 @@ func getJson() []map[string]interface{} {
 func GetLightLevel() int {
 	data := getJson()
 	if data == nil {
+		fmt.Println("Error getting data")
 		return 0
 	}
 
@@ -59,19 +62,25 @@ func GetLightLevel() int {
 	light_sensor_count := 0
 	light_sum := 0.0
 	for _, d := range data {
-		if d["type"] == 1 && !(d["value"] == nil || d["value"] == 0.0) { // light sensor
-			{ // motion sensor
+		if t, ok := d["type"].(float64); ok && int(t) == 1 { // motion sensor
+			if t, ok := d["value"].(float64); ok && int(t) == 1 {
 				isMotion = true
+				cooldown = 5
+			} else if cooldown > 0 {
+				isMotion = true
+				cooldown--
 			}
 
-			if d["type"] == 2 {
-				light_sensor_count++
-				light_sum += d["value"].(float64)
-			}
+		}
+
+		if t, ok := d["type"].(float64); ok && int(t) == 2 { // light sensor
+			light_sensor_count++
+			light_sum += d["value"].(float64)
 		}
 	}
 
 	if !isMotion || light_sensor_count == 0 {
+		fmt.Println("No motion detected or no light sensor data")
 		return 0
 	}
 
