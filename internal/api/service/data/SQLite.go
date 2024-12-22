@@ -58,8 +58,20 @@ func (ds *DataServiceSQLite) Delete(data *models.SensorData, ctx context.Context
 
 func (ds *DataServiceSQLite) ValidateData(data *models.SensorData) error {
 	var errMsg string
-	if data.Type < 0 {
-		errMsg += "Data type must be positive"
+	if data.ID < 0 {
+		errMsg += "Data id must be positive. "
+	}
+	if data.Type != 1 && data.Type != 2 {
+		errMsg += "Data type must be 1 or 2. "
+	}
+	if data.Type == 1 {
+		if data.Value != 0 && data.Value != 1 {
+			errMsg += "Data value must be 0 or 1. "
+		}
+	} else if data.Type == 2 {
+		if data.Value < 0 {
+			errMsg += "Data value must be positive. "
+		}
 	}
 	_, err := time.Parse("2006-01-02T15:04:05Z", data.Timestamp)
 	if err != nil {
